@@ -1,5 +1,8 @@
+using FluentValidation;
 using System.Text.Json.Serialization;
+using TestMinimalAPI.Models;
 using TestMinimalAPI.Modules;
+using TestMinimalAPI.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,9 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(opt =>
     opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+// FluentValidation
+builder.Services.AddScoped<IValidator<Cat>, CatValidator>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,8 +31,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
-// Register modules
+// Register MinimalAPI modules
 app.RegisterCatsModuleEndpoints();
 app.RegisterWeatherDataModule();
 

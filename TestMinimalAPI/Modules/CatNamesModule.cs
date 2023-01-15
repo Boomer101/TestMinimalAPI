@@ -1,4 +1,7 @@
+using FluentValidation;
 using Microsoft.OpenApi.Extensions;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using TestMinimalAPI.Models;
 
 public static class CatsModule
@@ -11,41 +14,36 @@ public static class CatsModule
 
             return Results.Ok(cats);
         });
+
+        endpoints.MapPost("/cats", (IValidator<Cat> validator, Cat cat) =>
+        {
+            var validationResult = validator.Validate(cat);
+            if(!validationResult.IsValid) 
+            {
+                return Results.ValidationProblem(validationResult.ToDictionary());
+            }
+
+            Debug.WriteLine($"POST received: {cat.Deconstruct}");
+
+            return Results.Ok(cat);
+        });
+
     }
 
     private static IEnumerable<Cat> LoadRandomCatData()
     {
         var breeds = new List<Breed>
         {
-            new Breed
-            {
-                Name = "American Bobtail",
-                WayOfLife = WayOfLife.Domestic,
-                Description = "American Bobtails are a very sturdy breed, with both short- and long-haired coats"
-            },
-
-            new Breed{
-                Name = "Burmese",
-                WayOfLife = WayOfLife.Domestic,
-                //Description = "Most modern Burmese are descendants of one female cat called Wong Mau"
-            }
+            new Breed("American Bobtail", WayOfLife.Domestic, "American Bobtails are a very sturdy breed, with both short- and long-haired coats"),
+            new Breed("Burmese", WayOfLife.Domestic, "Most modern Burmese are descendants of one female cat called Wong Mau"), 
+            new Breed("European Shorthair", WayOfLife.Domestic, "Our neighbour fluffy cat :)")
         };
 
         var cats = new List<Cat>
         {
-            new Cat
-            {
-                Name = "Felix",
-                Sex = Sex.Male,
-                Breed = breeds.First()
-            },
-
-            new Cat
-            {
-                Name = "Sina",
-                Sex = Sex.Female,
-                Breed =breeds[1]
-            }
+            new Cat("Felix", Sex.Male, 9, breeds.First()),
+            new Cat("Sina",  Sex.Female, 5, breeds[1]),
+            new Cat("Mops",  Sex.Female, 8, breeds[2]),
 
         };
 
