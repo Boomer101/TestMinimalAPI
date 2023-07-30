@@ -44,6 +44,7 @@ public static class CatsModule
             new Cat("Felix", Sex.Male, 9, breeds.First()),
             new Cat("Sina",  Sex.Female, 5, breeds[1]),
             new Cat("Mops",  Sex.Female, 8, breeds[2]),
+            new Cat("Felix", Sex.Male, 9, breeds[2]),
 
         };
 
