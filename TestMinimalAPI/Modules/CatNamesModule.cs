@@ -1,6 +1,3 @@
-using FluentValidation;
-using Microsoft.OpenApi.Extensions;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using TestMinimalAPI.Models;
 
@@ -15,19 +12,14 @@ public static class CatsModule
             return Results.Ok(cats);
         });
 
-        endpoints.MapPost("/cats", (IValidator<Cat> validator, Cat cat) =>
+        endpoints.MapPost("/cats", (Cat cat) =>
         {
-            var validationResult = validator.Validate(cat);
-            if(!validationResult.IsValid) 
-            {
-                return Results.ValidationProblem(validationResult.ToDictionary());
-            }
+            Debug.WriteLine($"POST received: {cat}");
 
-            Debug.WriteLine($"POST received: {cat.Deconstruct}");
-
+            // TODO: Persist data
             return Results.Ok(cat);
-        });
 
+        }).AddFluentValidationFilter(); 
     }
 
     private static IEnumerable<Cat> LoadRandomCatData()

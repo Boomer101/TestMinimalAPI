@@ -4,6 +4,7 @@ using TestMinimalAPI.Models;
 using TestMinimalAPI.Modules;
 using TestMinimalAPI.Validation;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -18,6 +19,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(opt =>
 });
 
 // FluentValidation
+builder.AddFluentValidationEndpointFilter();
 builder.Services.AddScoped<IValidator<Cat>, CatValidator>();
 
 var app = builder.Build();
